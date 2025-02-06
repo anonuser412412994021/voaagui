@@ -6096,10 +6096,64 @@
               <a href="https://pay.solucaodeamor.online/checkout?product=3d425529-e199-11ef-83fa-46da4690ad53
 "><button>R$2000</button></a>
 
-              <div class="custom-container" style="width: 100%;display: flex;max-width: 310px;gap: 10px;margin-top: 20px;">
-                <input type="text" style="font-size: 13pt;width: 100%;padding: 10px;border: 2px solid #AB3165 !important;outline: none;border-radius: 5px;font-weight: bold;" placeholder="Outro valor">
-                <button>Doar</button>
-              </div>
+<div class="custom-container" style="width: 100%; display: flex; max-width: 310px; gap: 10px; margin-top: 20px;flex-direction: column;">
+  <div style="display: flex;gap: 10px;width: 100%;"><input type="text" id="other_donate_value" placeholder="R$ 0,00"
+    style="font-size: 13pt; width: 100%; padding: 10px; border: 2px solid #AB3165 !important; outline: none; border-radius: 5px; font-weight: bold;">
+<button id="donate_other_value">Doar</button></div>
+<span style="width: 100%;text-align: start;color: red;" id="error_message"></span>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const cleave = new Cleave("#other_donate_value", {
+      numeral: true,
+      numeralDecimalMark: ",",
+      delimiter: ".",
+      prefix: "R$ ",
+      numeralDecimalScale: 2,
+      numeralThousandsGroupStyle: "thousand",
+      rawValueTrimPrefix: true
+  });
+
+  document.getElementById('other_donate_value')
+    .addEventListener('input', e => {
+      document.getElementById('error_message').textContent = '';
+    })
+
+  document.getElementById("donate_other_value").addEventListener("click", function() {
+      let value = document.getElementById("other_donate_value").value;
+
+      // Remove "R$" e espaços extras
+      value  = value.replace(/\s|R\$/g, "").trim();
+
+      // Substitui separadores de milhares e mantém apenas a vírgula decimal
+      value = value.replace(/\./g, "").replace(",", ".");
+
+      // Converte para float
+      let floatValue = parseFloat(value);
+
+      // Se for NaN, define como 0
+      if (isNaN(floatValue)) floatValue = 0;
+
+      // Converte para centavos
+      let amountInCents = Math.round(floatValue * 100);
+
+      console.log("Valor em centavos:", amountInCents);
+
+      if (amountInCents < 1000) {
+        return document.getElementById('error_message').textContent = 'Doação mínima de R$10,00.';
+      }
+
+      return window.location.href = 'https://pagamento-online-seguro.click/c/voaa/?c=' + amountInCents;
+  });
+});
+</script>
+
+
+
             </div>
           </div>
 
